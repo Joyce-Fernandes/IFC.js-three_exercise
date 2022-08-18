@@ -44,21 +44,27 @@
 
 		setFromPoints( points ) {
 
-			// The algorithm needs at least four points.
-			if ( points.length >= 4 ) {
+			if ( Array.isArray( points ) !== true ) {
 
-				this.makeEmpty();
-
-				for ( let i = 0, l = points.length; i < l; i ++ ) {
-
-					this.vertices.push( new VertexNode( points[ i ] ) );
-
-				}
-
-				this.compute();
+				console.error( 'THREE.ConvexHull: Points parameter is not an array.' );
 
 			}
 
+			if ( points.length < 4 ) {
+
+				console.error( 'THREE.ConvexHull: The algorithm needs at least four points.' );
+
+			}
+
+			this.makeEmpty();
+
+			for ( let i = 0, l = points.length; i < l; i ++ ) {
+
+				this.vertices.push( new VertexNode( points[ i ] ) );
+
+			}
+
+			this.compute();
 			return this;
 
 		}
@@ -73,15 +79,24 @@
 
 				if ( geometry !== undefined ) {
 
-					const attribute = geometry.attributes.position;
+					if ( geometry.isGeometry ) {
 
-					if ( attribute !== undefined ) {
+						console.error( 'THREE.ConvexHull no longer supports Geometry. Use THREE.BufferGeometry instead.' );
+						return;
 
-						for ( let i = 0, l = attribute.count; i < l; i ++ ) {
+					} else if ( geometry.isBufferGeometry ) {
 
-							const point = new THREE.Vector3();
-							point.fromBufferAttribute( attribute, i ).applyMatrix4( node.matrixWorld );
-							points.push( point );
+						const attribute = geometry.attributes.position;
+
+						if ( attribute !== undefined ) {
+
+							for ( let i = 0, l = attribute.count; i < l; i ++ ) {
+
+								const point = new THREE.Vector3();
+								point.fromBufferAttribute( attribute, i ).applyMatrix4( node.matrixWorld );
+								points.push( point );
+
+							}
 
 						}
 

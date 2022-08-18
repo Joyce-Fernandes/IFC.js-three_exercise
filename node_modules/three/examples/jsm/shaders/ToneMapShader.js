@@ -2,7 +2,7 @@
  * Full-screen tone-mapping shader based on http://www.cis.rit.edu/people/faculty/ferwerda/publications/sig02_paper.pdf
  */
 
-const ToneMapShader = {
+var ToneMapShader = {
 
 	uniforms: {
 

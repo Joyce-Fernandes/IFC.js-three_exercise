@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="/IfcViewer/styles_web.css" />
+    <link rel="stylesheet" type="text/css" href="/css/styles_1.css" />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IFC.js Crash Course</title>
+  </head>
+  <body>
+    <header>
+      <img class="spinning logo" src="./resources/ifcjs-logo.svg" alt="IFC.js logo">
+      
+      <h3>IFC.js Crash Course</h3>
+      <div class="header-container">
+            
+        
+        <nav>
+            <ul>
+                <li><a href="/webpage/index.html">Home</a></li>
+                <li><a  href="/list.html">Model list</a></li>
+                <li><a href="/Convert/index.html">Convert JSON</a></li>
+                <li><a href="/gis/index-map.html">3D GIS</a></li>
+                
+            </ul>
+        </nav>
+    </div>  
+  </header>
+  <br>
+
+    <aside class="side-menu" id="side-menu-left">
+      <!-- <button  class="btn-tool" style="border: none;margin-left: 1.5vw" onclick="categoriesShow()" data-toggle="tooltip"
+      data-placement="bottom" title="Storeys">
+ <span class="bi bi-layers-fill"></span> -->
+<!-- </button> -->
+
+    </aside>
+    <!-- <button id="clickme">Download some Excel file</button> -->
+    
+    <div id="viewer-container"></div>
+    <div id="checkboxes">
+      <div>
+          <input checked="true" id="IFCWALL" type="checkbox">
+          Walls
+      </div>
+      <div>
+          <input checked="true" id="IFCSLAB" type="checkbox">
+          Slabs
+      </div>
+      <div>
+          <input checked="true" id="IFCROOF" type="checkbox">
+          Roofs
+      </div>
+      <div>
+          <input checked="true" id="IFCBEAM" type="checkbox">
+          Beam
+      </div>
+      <div>
+          <input checked="true" id="IFCCOLUMN" type="checkbox">
+          Column
+      </div>
+
+  </div>
+</div>
+<div class = "color-wrapper" id = "colorbar" style="visibility: hidden"></div>
+
+    <div class="properties-panel" id="properties-panel">
+      <h2>Property Set</h2> </div>
+    <div id="loading-overlay" class="loading-overlay hidden">
+      <h1 id="loading-progress" class="loading-progress"></h1>
+    </div> 
+    
+    
+    
+
+    <script type="module" src="./build/main.js"></script>
+  </body>
+</html>

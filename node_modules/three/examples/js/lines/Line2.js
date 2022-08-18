@@ -7,12 +7,13 @@
 		} ) ) {
 
 			super( geometry, material );
-			this.isLine2 = true;
 			this.type = 'Line2';
 
 		}
 
 	}
+
+	Line2.prototype.isLine2 = true;
 
 	THREE.Line2 = Line2;
 

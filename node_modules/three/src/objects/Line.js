@@ -19,8 +19,6 @@ class Line extends Object3D {
 
 		super();
 
-		this.isLine = true;
-
 		this.type = 'Line';
 
 		this.geometry = geometry;
@@ -30,9 +28,9 @@ class Line extends Object3D {
 
 	}
 
-	copy( source, recursive ) {
+	copy( source ) {
 
-		super.copy( source, recursive );
+		super.copy( source );
 
 		this.material = source.material;
 		this.geometry = source.geometry;
@@ -45,28 +43,36 @@ class Line extends Object3D {
 
 		const geometry = this.geometry;
 
-		// we assume non-indexed geometry
+		if ( geometry.isBufferGeometry ) {
 
-		if ( geometry.index === null ) {
+			// we assume non-indexed geometry
 
-			const positionAttribute = geometry.attributes.position;
-			const lineDistances = [ 0 ];
+			if ( geometry.index === null ) {
 
-			for ( let i = 1, l = positionAttribute.count; i < l; i ++ ) {
+				const positionAttribute = geometry.attributes.position;
+				const lineDistances = [ 0 ];
 
-				_start.fromBufferAttribute( positionAttribute, i - 1 );
-				_end.fromBufferAttribute( positionAttribute, i );
+				for ( let i = 1, l = positionAttribute.count; i < l; i ++ ) {
 
-				lineDistances[ i ] = lineDistances[ i - 1 ];
-				lineDistances[ i ] += _start.distanceTo( _end );
+					_start.fromBufferAttribute( positionAttribute, i - 1 );
+					_end.fromBufferAttribute( positionAttribute, i );
+
+					lineDistances[ i ] = lineDistances[ i - 1 ];
+					lineDistances[ i ] += _start.distanceTo( _end );
+
+				}
+
+				geometry.setAttribute( 'lineDistance', new Float32BufferAttribute( lineDistances, 1 ) );
+
+			} else {
+
+				console.warn( 'THREE.Line.computeLineDistances(): Computation only possible with non-indexed BufferGeometry.' );
 
 			}
 
-			geometry.setAttribute( 'lineDistance', new Float32BufferAttribute( lineDistances, 1 ) );
+		} else if ( geometry.isGeometry ) {
 
-		} else {
-
-			console.warn( 'THREE.Line.computeLineDistances(): Computation only possible with non-indexed BufferGeometry.' );
+			console.error( 'THREE.Line.computeLineDistances() no longer supports THREE.Geometry. Use THREE.BufferGeometry instead.' );
 
 		}
 
@@ -105,82 +111,90 @@ class Line extends Object3D {
 		const interRay = new Vector3();
 		const step = this.isLineSegments ? 2 : 1;
 
-		const index = geometry.index;
-		const attributes = geometry.attributes;
-		const positionAttribute = attributes.position;
+		if ( geometry.isBufferGeometry ) {
 
-		if ( index !== null ) {
+			const index = geometry.index;
+			const attributes = geometry.attributes;
+			const positionAttribute = attributes.position;
 
-			const start = Math.max( 0, drawRange.start );
-			const end = Math.min( index.count, ( drawRange.start + drawRange.count ) );
+			if ( index !== null ) {
 
-			for ( let i = start, l = end - 1; i < l; i += step ) {
+				const start = Math.max( 0, drawRange.start );
+				const end = Math.min( index.count, ( drawRange.start + drawRange.count ) );
 
-				const a = index.getX( i );
-				const b = index.getX( i + 1 );
+				for ( let i = start, l = end - 1; i < l; i += step ) {
 
-				vStart.fromBufferAttribute( positionAttribute, a );
-				vEnd.fromBufferAttribute( positionAttribute, b );
+					const a = index.getX( i );
+					const b = index.getX( i + 1 );
 
-				const distSq = _ray.distanceSqToSegment( vStart, vEnd, interRay, interSegment );
+					vStart.fromBufferAttribute( positionAttribute, a );
+					vEnd.fromBufferAttribute( positionAttribute, b );
 
-				if ( distSq > localThresholdSq ) continue;
+					const distSq = _ray.distanceSqToSegment( vStart, vEnd, interRay, interSegment );
 
-				interRay.applyMatrix4( this.matrixWorld ); //Move back to world space for distance calculation
+					if ( distSq > localThresholdSq ) continue;
 
-				const distance = raycaster.ray.origin.distanceTo( interRay );
+					interRay.applyMatrix4( this.matrixWorld ); //Move back to world space for distance calculation
 
-				if ( distance < raycaster.near || distance > raycaster.far ) continue;
+					const distance = raycaster.ray.origin.distanceTo( interRay );
 
-				intersects.push( {
+					if ( distance < raycaster.near || distance > raycaster.far ) continue;
 
-					distance: distance,
-					// What do we want? intersection point on the ray or on the segment??
-					// point: raycaster.ray.at( distance ),
-					point: interSegment.clone().applyMatrix4( this.matrixWorld ),
-					index: i,
-					face: null,
-					faceIndex: null,
-					object: this
+					intersects.push( {
 
-				} );
+						distance: distance,
+						// What do we want? intersection point on the ray or on the segment??
+						// point: raycaster.ray.at( distance ),
+						point: interSegment.clone().applyMatrix4( this.matrixWorld ),
+						index: i,
+						face: null,
+						faceIndex: null,
+						object: this
+
+					} );
+
+				}
+
+			} else {
+
+				const start = Math.max( 0, drawRange.start );
+				const end = Math.min( positionAttribute.count, ( drawRange.start + drawRange.count ) );
+
+				for ( let i = start, l = end - 1; i < l; i += step ) {
+
+					vStart.fromBufferAttribute( positionAttribute, i );
+					vEnd.fromBufferAttribute( positionAttribute, i + 1 );
+
+					const distSq = _ray.distanceSqToSegment( vStart, vEnd, interRay, interSegment );
+
+					if ( distSq > localThresholdSq ) continue;
+
+					interRay.applyMatrix4( this.matrixWorld ); //Move back to world space for distance calculation
+
+					const distance = raycaster.ray.origin.distanceTo( interRay );
+
+					if ( distance < raycaster.near || distance > raycaster.far ) continue;
+
+					intersects.push( {
+
+						distance: distance,
+						// What do we want? intersection point on the ray or on the segment??
+						// point: raycaster.ray.at( distance ),
+						point: interSegment.clone().applyMatrix4( this.matrixWorld ),
+						index: i,
+						face: null,
+						faceIndex: null,
+						object: this
+
+					} );
+
+				}
 
 			}
 
-		} else {
+		} else if ( geometry.isGeometry ) {
 
-			const start = Math.max( 0, drawRange.start );
-			const end = Math.min( positionAttribute.count, ( drawRange.start + drawRange.count ) );
-
-			for ( let i = start, l = end - 1; i < l; i += step ) {
-
-				vStart.fromBufferAttribute( positionAttribute, i );
-				vEnd.fromBufferAttribute( positionAttribute, i + 1 );
-
-				const distSq = _ray.distanceSqToSegment( vStart, vEnd, interRay, interSegment );
-
-				if ( distSq > localThresholdSq ) continue;
-
-				interRay.applyMatrix4( this.matrixWorld ); //Move back to world space for distance calculation
-
-				const distance = raycaster.ray.origin.distanceTo( interRay );
-
-				if ( distance < raycaster.near || distance > raycaster.far ) continue;
-
-				intersects.push( {
-
-					distance: distance,
-					// What do we want? intersection point on the ray or on the segment??
-					// point: raycaster.ray.at( distance ),
-					point: interSegment.clone().applyMatrix4( this.matrixWorld ),
-					index: i,
-					face: null,
-					faceIndex: null,
-					object: this
-
-				} );
-
-			}
+			console.error( 'THREE.Line.raycast() no longer supports THREE.Geometry. Use THREE.BufferGeometry instead.' );
 
 		}
 
@@ -190,26 +204,40 @@ class Line extends Object3D {
 
 		const geometry = this.geometry;
 
-		const morphAttributes = geometry.morphAttributes;
-		const keys = Object.keys( morphAttributes );
+		if ( geometry.isBufferGeometry ) {
 
-		if ( keys.length > 0 ) {
+			const morphAttributes = geometry.morphAttributes;
+			const keys = Object.keys( morphAttributes );
 
-			const morphAttribute = morphAttributes[ keys[ 0 ] ];
+			if ( keys.length > 0 ) {
 
-			if ( morphAttribute !== undefined ) {
+				const morphAttribute = morphAttributes[ keys[ 0 ] ];
 
-				this.morphTargetInfluences = [];
-				this.morphTargetDictionary = {};
+				if ( morphAttribute !== undefined ) {
 
-				for ( let m = 0, ml = morphAttribute.length; m < ml; m ++ ) {
+					this.morphTargetInfluences = [];
+					this.morphTargetDictionary = {};
 
-					const name = morphAttribute[ m ].name || String( m );
+					for ( let m = 0, ml = morphAttribute.length; m < ml; m ++ ) {
 
-					this.morphTargetInfluences.push( 0 );
-					this.morphTargetDictionary[ name ] = m;
+						const name = morphAttribute[ m ].name || String( m );
+
+						this.morphTargetInfluences.push( 0 );
+						this.morphTargetDictionary[ name ] = m;
+
+					}
 
 				}
+
+			}
+
+		} else {
+
+			const morphTargets = geometry.morphTargets;
+
+			if ( morphTargets !== undefined && morphTargets.length > 0 ) {
+
+				console.error( 'THREE.Line.updateMorphTargets() does not support THREE.Geometry. Use THREE.BufferGeometry instead.' );
 
 			}
 
@@ -218,5 +246,8 @@ class Line extends Object3D {
 	}
 
 }
+
+Line.prototype.isLine = true;
+
 
 export { Line };

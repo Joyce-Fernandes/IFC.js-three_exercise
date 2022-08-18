@@ -54,9 +54,9 @@
 
 		}
 
-		copy( source, recursive ) {
+		copy( source ) {
 
-			super.copy( source, recursive );
+			super.copy( source );
 			this.mixer = new THREE.AnimationMixer( this );
 			return this;
 

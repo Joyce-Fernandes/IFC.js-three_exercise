@@ -4,8 +4,6 @@ class Fog {
 
 	constructor( color, near = 1, far = 1000 ) {
 
-		this.isFog = true;
-
 		this.name = '';
 
 		this.color = new Color( color );
@@ -33,5 +31,7 @@ class Fog {
 	}
 
 }
+
+Fog.prototype.isFog = true;
 
 export { Fog };

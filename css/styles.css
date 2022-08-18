@@ -1,0 +1,239 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+  --light-gray: rgb(123, 123, 123);
+  --light-blue: #8dbafff0;
+  --translucent-white: rgba(255, 255, 255, 0.7);
+  --normal-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  --blur-filter: blur(8px);
+}
+ .ifc-tree-menu h2, .properties h2 {
+  text-align: center;
+  font-size: 1rem;
+  margin-top: 1em;
+}
+
+/*Tree view: https://www.w3schools.com/howto/howto_js_treeview.asp*/
+
+.ifc-tree-menu {
+  position: absolute;
+  opacity: 0.7;
+  z-index: 999999999;
+  margin-top: 5em;
+  top: 1rem;
+  left: 1rem;
+  background-color: #f1f1f1;
+  max-height: 80vh;
+}
+.properties {
+  position: absolute;
+  z-index: 999999999;
+  margin-top: 1em;
+  right: 1rem;
+  background-color: lightgray;
+  width: 30vw;
+  max-height: 80vh;
+  opacity: 0.7;
+  
+}
+
+li ul {
+  user-select: none;
+  cursor: pointer;
+}
+
+ul,
+#myUL {
+  list-style-type: none;
+}
+
+#myUL {
+  margin: 0.5rem;
+  padding: 1rem;
+  z-index: 999999999;
+  overflow-y: auto;
+  max-height: 75vh;
+}
+.tabifc {
+  margin: 0.5rem;
+  padding: 1rem;
+  overflow-y: auto;
+  max-height: 75vh;
+}
+.caret {
+  cursor: pointer;
+  user-select: none; 
+}
+.caret::before {
+  content: "\25B6";
+  color: black;
+  display: inline-block;
+  margin-right: 6px;
+}
+.caret-down::before {
+  transform: rotate(90deg);
+}
+.nested {
+  display: none;
+}
+.active {
+  display: block;
+  margin-left: 10px;
+}
+.tab {
+  overflow: hidden;
+  background-color: #f1f1f1;
+}
+.tab button {
+  background-color: inherit;
+  font-size: 18px;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 33px;
+  transition: 0.3s;
+  margin-left: 1.5em;
+}
+
+.tab button:hover {
+  background-color: #ddd;
+}
+
+.tab button.active {
+  background-color: rgb(182, 180, 180);
+}
+
+.tabdata {
+  display: none;
+  
+  border-top: none;
+  max-width: 30vw;
+  max-height: 75vh;
+  overflow-y: auto;
+}
+
+table,
+th,
+td {
+  border: 1px solid;
+  padding: 0.5rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  
+}
+
+.collapsible {
+  background-color: #eee;
+  color: rgb(43, 41, 41);
+  cursor: pointer;
+  padding: 15px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+.colactive,
+.collapsible:hover {
+  background-color: rgb(170, 168, 167);
+}
+.contents {
+  padding: 1rem;
+  display: none;
+  overflow: hidden;
+}
+
+.table-container {
+  position: absolute;
+  max-height: 100vh;
+  background-color: white;
+  overflow: scroll;
+}
+
+#walls-table {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  max-width: 30vw;
+}
+
+#walls-table td, #walls-table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#walls-table tr:nth-child(even){background-color: #f2f2f2;}
+
+#walls-table tr:hover {background-color: #ddd;}
+
+#walls-table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
+}
+
+#viewer-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  outline: none;
+  width: 100%;
+  height: 100%;
+}
+#export {
+  
+  right: 0;
+}
+.ifcjs-dimension-preview {
+  width: 1rem;
+  height: 1rem;
+  background-color: #FFA50F;
+  border-radius: 1rem;
+  opacity: 0.5;
+}
+
+.ifcjs-dimension-label {
+  background-color: black;
+  color: white;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+#instructions {
+  z-index: 100;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgb(60 179 113 / 50%);
+  backdrop-filter: blur(3px);
+  padding: 5px;
+  border: 1px solid white;
+  border-radius: 5px;
+}
+#file-input {
+  border: none;
+  border-radius: var(--border-radius);
+  height: 2rem;
+  padding: 0.3rem;
+  background-color: blue;
+  backdrop-filter: var(--blur);
+  box-shadow: var(--shadow);
+  max-width: 3rem;
+  text-align: center;
+  font-size: 0.8rem;
+}
+#file-input:hover {
+  background: var(--primary-light);
+  transition: all 0.3s ease 0s;
+  transform: translateY(-4px);
+}
+#file-input:focus {
+  background: var(--primary-light);
+}

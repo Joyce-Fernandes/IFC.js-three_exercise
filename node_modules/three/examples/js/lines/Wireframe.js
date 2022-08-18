@@ -11,10 +11,9 @@
 		} ) ) {
 
 			super( geometry, material );
-			this.isWireframe = true;
 			this.type = 'Wireframe';
 
-		} // for backwards-compatibility, but could be a method of THREE.LineSegmentsGeometry...
+		} // for backwards-compatability, but could be a method of THREE.LineSegmentsGeometry...
 
 
 		computeLineDistances() {
@@ -46,6 +45,8 @@
 		}
 
 	}
+
+	Wireframe.prototype.isWireframe = true;
 
 	THREE.Wireframe = Wireframe;
 

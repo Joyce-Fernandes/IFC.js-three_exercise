@@ -1,4 +1,5 @@
-import { projects } from "./static/projects.js";
+
+import { projects } from "./projects.js";
 
 
 // Get all cards
@@ -8,12 +9,12 @@ console.log(projectCards);
 
 const templateProjectCard = projectCards[0];
 
-const baseURL = '/viewer_index.html';
+const baseURL = './viewer.html';
 
 for(let project of projects) {
 
     // Create a new card
-    const newCard = templateProjectCard.cloneNode(true);
+    const newCard = templateProjectCard.cloneNode("true");
 
     // Add project name to card
     const cardTitle = newCard.querySelector('h2');
@@ -25,6 +26,7 @@ for(let project of projects) {
 
     // Add card to container
     projectContainer.appendChild(newCard);
+    
 }
 
 templateProjectCard.remove();
@@ -40,3 +42,4 @@ const ifcLoader = new IFCLoader();
     },
     false
   );
+  

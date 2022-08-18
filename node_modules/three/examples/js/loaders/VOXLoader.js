@@ -59,12 +59,13 @@
 
 				for ( let j = 0; j < 4; j ++ ) {
 
-					id += String.fromCharCode( data.getUint8( i ++ ) );
+					id += String.fromCharCode( data.getUint8( i ++, true ) );
 
 				}
 
 				const chunkSize = data.getUint32( i, true );
 				i += 4;
+				data.getUint32( i, true );
 				i += 4; // childChunks
 
 				if ( id === 'SIZE' ) {
@@ -210,7 +211,7 @@
 
 	}
 
-	class VOXData3DTexture extends THREE.Data3DTexture {
+	class VOXDataTexture3D extends THREE.DataTexture3D {
 
 		constructor( chunk ) {
 
@@ -235,13 +236,12 @@
 			this.minFilter = THREE.NearestFilter;
 			this.magFilter = THREE.LinearFilter;
 			this.unpackAlignment = 1;
-			this.needsUpdate = true;
 
 		}
 
 	}
 
-	THREE.VOXData3DTexture = VOXData3DTexture;
+	THREE.VOXDataTexture3D = VOXDataTexture3D;
 	THREE.VOXLoader = VOXLoader;
 	THREE.VOXMesh = VOXMesh;
 

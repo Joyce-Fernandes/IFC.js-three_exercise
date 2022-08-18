@@ -15,6 +15,13 @@
 
 		modify( geometry ) {
 
+			if ( geometry.isGeometry === true ) {
+
+				console.error( 'THREE.TessellateModifier no longer supports Geometry. Use THREE.BufferGeometry instead.' );
+				return geometry;
+
+			}
+
 			if ( geometry.index !== null ) {
 
 				geometry = geometry.toNonIndexed();

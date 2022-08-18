@@ -14,14 +14,9 @@
 				color: 0x000000,
 				transparent: true,
 				opacity: 0.6,
-				depthWrite: false,
-				stencilWrite: true,
-				stencilFunc: THREE.EqualStencilFunc,
-				stencilRef: 0,
-				stencilZPass: THREE.IncrementStencilOp
+				depthWrite: false
 			} );
 			super( mesh.geometry, shadowMaterial );
-			this.isShadowMesh = true;
 			this.meshMatrix = mesh.matrixWorld;
 			this.frustumCulled = false;
 			this.matrixAutoUpdate = false;
@@ -54,6 +49,8 @@
 		}
 
 	}
+
+	ShadowMesh.prototype.isShadowMesh = true;
 
 	THREE.ShadowMesh = ShadowMesh;
 

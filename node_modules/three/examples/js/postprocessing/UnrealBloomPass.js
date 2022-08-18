@@ -22,22 +22,27 @@
 
 			this.clearColor = new THREE.Color( 0, 0, 0 ); // render targets
 
+			const pars = {
+				minFilter: THREE.LinearFilter,
+				magFilter: THREE.LinearFilter,
+				format: THREE.RGBAFormat
+			};
 			this.renderTargetsHorizontal = [];
 			this.renderTargetsVertical = [];
 			this.nMips = 5;
 			let resx = Math.round( this.resolution.x / 2 );
 			let resy = Math.round( this.resolution.y / 2 );
-			this.renderTargetBright = new THREE.WebGLRenderTarget( resx, resy );
+			this.renderTargetBright = new THREE.WebGLRenderTarget( resx, resy, pars );
 			this.renderTargetBright.texture.name = 'UnrealBloomPass.bright';
 			this.renderTargetBright.texture.generateMipmaps = false;
 
 			for ( let i = 0; i < this.nMips; i ++ ) {
 
-				const renderTargetHorizonal = new THREE.WebGLRenderTarget( resx, resy );
+				const renderTargetHorizonal = new THREE.WebGLRenderTarget( resx, resy, pars );
 				renderTargetHorizonal.texture.name = 'UnrealBloomPass.h' + i;
 				renderTargetHorizonal.texture.generateMipmaps = false;
 				this.renderTargetsHorizontal.push( renderTargetHorizonal );
-				const renderTargetVertical = new THREE.WebGLRenderTarget( resx, resy );
+				const renderTargetVertical = new THREE.WebGLRenderTarget( resx, resy, pars );
 				renderTargetVertical.texture.name = 'UnrealBloomPass.v' + i;
 				renderTargetVertical.texture.generateMipmaps = false;
 				this.renderTargetsVertical.push( renderTargetVertical );
@@ -302,6 +307,9 @@
 					'blurTexture5': {
 						value: null
 					},
+					'dirtTexture': {
+						value: null
+					},
 					'bloomStrength': {
 						value: 1.0
 					},
@@ -326,6 +334,7 @@
 				uniform sampler2D blurTexture3;
 				uniform sampler2D blurTexture4;
 				uniform sampler2D blurTexture5;
+				uniform sampler2D dirtTexture;
 				uniform float bloomStrength;
 				uniform float bloomRadius;
 				uniform float bloomFactors[NUM_MIPS];

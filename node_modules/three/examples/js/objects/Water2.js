@@ -2,8 +2,8 @@
 
 	/**
  * References:
- *	https://alex.vlachos.com/graphics/Vlachos-SIGGRAPH10-WaterFlow.pdf
- *	http://graphicsrunner.blogspot.de/2010/08/water-using-flow-maps.html
+ *	http://www.valvesoftware.com/publications/2010/siggraph2010_vlachos_waterflow.pdf
+ * 	http://graphicsrunner.blogspot.de/2010/08/water-using-flow-maps.html
  *
  */
 
@@ -12,7 +12,6 @@
 		constructor( geometry, options = {} ) {
 
 			super( geometry );
-			this.isWater = true;
 			this.type = 'Water';
 			const scope = this;
 			const color = options.color !== undefined ? new THREE.Color( options.color ) : new THREE.Color( 0xFFFFFF );
@@ -24,6 +23,7 @@
 			const reflectivity = options.reflectivity || 0.02;
 			const scale = options.scale || 1;
 			const shader = options.shader || Water.WaterShader;
+			const encoding = options.encoding !== undefined ? options.encoding : THREE.LinearEncoding;
 			const textureLoader = new THREE.TextureLoader();
 			const flowMap = options.flowMap || undefined;
 			const normalMap0 = options.normalMap0 || textureLoader.load( 'textures/water/Water_1_M_Normal.jpg' );
@@ -51,12 +51,14 @@
 			const reflector = new THREE.Reflector( geometry, {
 				textureWidth: textureWidth,
 				textureHeight: textureHeight,
-				clipBias: clipBias
+				clipBias: clipBias,
+				encoding: encoding
 			} );
 			const refractor = new THREE.Refractor( geometry, {
 				textureWidth: textureWidth,
 				textureHeight: textureHeight,
-				clipBias: clipBias
+				clipBias: clipBias,
+				encoding: encoding
 			} );
 			reflector.matrixAutoUpdate = false;
 			refractor.matrixAutoUpdate = false; // material
@@ -158,6 +160,7 @@
 
 	}
 
+	Water.prototype.isWater = true;
 	Water.WaterShader = {
 		uniforms: {
 			'color': {

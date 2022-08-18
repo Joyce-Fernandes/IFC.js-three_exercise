@@ -1,7 +1,8 @@
 ( function () {
 
 	/**
- * Ascii generation is based on https://github.com/hassadee/jsascii/blob/master/jsascii.js
+ * Ascii generation is based on http://www.nihilogic.dk/labs/jsascii/
+ * Maybe more about this later with a blog post at http://lab4games.net/zz85/blog
  *
  * 16 April 2012 - @blurspline
  */
@@ -13,18 +14,18 @@
 			// darker bolder character set from https://github.com/saw/Canvas-ASCII-Art/
 			// ' .\'`^",:;Il!i~+_-?][}{1)(|/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$'.split('');
 			// Some ASCII settings
-			const fResolution = options[ 'resolution' ] || 0.15; // Higher for more details
+			const bResolution = ! options[ 'resolution' ] ? 0.15 : options[ 'resolution' ]; // Higher for more details
 
-			const iScale = options[ 'scale' ] || 1;
-			const bColor = options[ 'color' ] || false; // nice but slows down rendering!
+			const iScale = ! options[ 'scale' ] ? 1 : options[ 'scale' ];
+			const bColor = ! options[ 'color' ] ? false : options[ 'color' ]; // nice but slows down rendering!
 
-			const bAlpha = options[ 'alpha' ] || false; // Transparency
+			const bAlpha = ! options[ 'alpha' ] ? false : options[ 'alpha' ]; // Transparency
 
-			const bBlock = options[ 'block' ] || false; // blocked characters. like good O dos
+			const bBlock = ! options[ 'block' ] ? false : options[ 'block' ]; // blocked characters. like good O dos
 
-			const bInvert = options[ 'invert' ] || false; // black is white, white is black
+			const bInvert = ! options[ 'invert' ] ? false : options[ 'invert' ]; // black is white, white is black
 
-			const strResolution = options[ 'strResolution' ] || 'low';
+			const strResolution = 'low';
 			let width, height;
 			const domElement = document.createElement( 'div' );
 			domElement.style.cursor = 'default';
@@ -45,11 +46,17 @@
 			this.render = function ( scene, camera ) {
 
 				renderer.render( scene, camera );
-				asciifyImage( oAscii );
+				asciifyImage( renderer, oAscii );
 
 			};
 
-			this.domElement = domElement; // Throw in ascii library from https://github.com/hassadee/jsascii/blob/master/jsascii.js (MIT License)
+			this.domElement = domElement; // Throw in ascii library from http://www.nihilogic.dk/labs/jsascii/jsascii.js
+
+			/*
+    * jsAscii 0.1
+    * Copyright (c) 2008 Jacob Seidelin, jseidelin@nihilogic.dk, http://blog.nihilogic.dk/
+    * MIT License [http://www.nihilogic.dk/licenses/mit-license.txt]
+    */
 
 			function initAsciiSize() {
 
@@ -108,7 +115,26 @@
 			}
 
 			let aCharList = bColor ? aDefaultColorCharList : aDefaultCharList;
-			if ( charSet ) aCharList = charSet; // Setup dom
+			if ( charSet ) aCharList = charSet;
+			let fResolution = 0.5;
+
+			switch ( strResolution ) {
+
+				case 'low':
+					fResolution = 0.25;
+					break;
+
+				case 'medium':
+					fResolution = 0.5;
+					break;
+
+				case 'high':
+					fResolution = 1;
+					break;
+
+			}
+
+			if ( bResolution ) fResolution = bResolution; // Setup dom
 
 			const fFontSize = 2 / fResolution * iScale;
 			const fLineHeight = 2 / fResolution * iScale; // adjust letter-spacing for all combinations of scale and resolution to get it to fit the image width.
@@ -186,7 +212,7 @@
 			// convert img element to ascii
 
 
-			function asciifyImage( oAscii ) {
+			function asciifyImage( canvasRenderer, oAscii ) {
 
 				oCtx.clearRect( 0, 0, iWidth, iHeight );
 				oCtx.drawImage( oCanvasImg, 0, 0, iWidth, iHeight );

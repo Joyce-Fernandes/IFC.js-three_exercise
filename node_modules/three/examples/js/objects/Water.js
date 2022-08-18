@@ -2,8 +2,8 @@
 
 	/**
  * Work based on :
- * https://github.com/Slayvin: Flat mirror for three.js
- * https://home.adelphi.edu/~stemkoski/ : An implementation of water shader based on the flat mirror
+ * http://slayvin.net : Flat mirror for three.js
+ * http://www.adelphi.edu/~stemkoski : An implementation of water shader based on the flat mirror
  * http://29a.ch/ && http://29a.ch/slides/2012/webglwater/ : Water shader explanations in WebGL
  */
 
@@ -12,7 +12,6 @@
 		constructor( geometry, options = {} ) {
 
 			super( geometry );
-			this.isWater = true;
 			const scope = this;
 			const textureWidth = options.textureWidth !== undefined ? options.textureWidth : 512;
 			const textureHeight = options.textureHeight !== undefined ? options.textureHeight : 512;
@@ -40,7 +39,19 @@
 			const q = new THREE.Vector4();
 			const textureMatrix = new THREE.Matrix4();
 			const mirrorCamera = new THREE.PerspectiveCamera();
-			const renderTarget = new THREE.WebGLRenderTarget( textureWidth, textureHeight );
+			const parameters = {
+				minFilter: THREE.LinearFilter,
+				magFilter: THREE.LinearFilter,
+				format: THREE.RGBFormat
+			};
+			const renderTarget = new THREE.WebGLRenderTarget( textureWidth, textureHeight, parameters );
+
+			if ( ! THREE.MathUtils.isPowerOfTwo( textureWidth ) || ! THREE.MathUtils.isPowerOfTwo( textureHeight ) ) {
+
+				renderTarget.texture.generateMipmaps = false;
+
+			}
+
 			const mirrorShader = {
 				uniforms: THREE.UniformsUtils.merge( [ THREE.UniformsLib[ 'fog' ], THREE.UniformsLib[ 'lights' ], {
 					'normalSampler': {
@@ -281,6 +292,8 @@
 		}
 
 	}
+
+	Water.prototype.isWater = true;
 
 	THREE.Water = Water;
 

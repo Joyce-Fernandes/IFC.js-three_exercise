@@ -47,51 +47,51 @@
 			function parseASCII( data ) {
 
 				// connectivity of the triangles
-				const indices = []; // triangles vertices
+				var indices = []; // triangles vertices
 
-				const positions = []; // red, green, blue colors in the range 0 to 1
+				var positions = []; // red, green, blue colors in the range 0 to 1
 
-				const colors = []; // normal vector, one per vertex
+				var colors = []; // normal vector, one per vertex
 
-				const normals = [];
-				let result; // pattern for detecting the end of a number sequence
+				var normals = [];
+				var result; // pattern for detecting the end of a number sequence
 
-				const patWord = /^[^\d.\s-]+/; // pattern for reading vertices, 3 floats or integers
+				var patWord = /^[^\d.\s-]+/; // pattern for reading vertices, 3 floats or integers
 
-				const pat3Floats = /(\-?\d+\.?[\d\-\+e]*)\s+(\-?\d+\.?[\d\-\+e]*)\s+(\-?\d+\.?[\d\-\+e]*)/g; // pattern for connectivity, an integer followed by any number of ints
+				var pat3Floats = /(\-?\d+\.?[\d\-\+e]*)\s+(\-?\d+\.?[\d\-\+e]*)\s+(\-?\d+\.?[\d\-\+e]*)/g; // pattern for connectivity, an integer followed by any number of ints
 				// the first integer is the number of polygon nodes
 
-				const patConnectivity = /^(\d+)\s+([\s\d]*)/; // indicates start of vertex data section
+				var patConnectivity = /^(\d+)\s+([\s\d]*)/; // indicates start of vertex data section
 
-				const patPOINTS = /^POINTS /; // indicates start of polygon connectivity section
+				var patPOINTS = /^POINTS /; // indicates start of polygon connectivity section
 
-				const patPOLYGONS = /^POLYGONS /; // indicates start of triangle strips section
+				var patPOLYGONS = /^POLYGONS /; // indicates start of triangle strips section
 
-				const patTRIANGLE_STRIPS = /^TRIANGLE_STRIPS /; // POINT_DATA number_of_values
+				var patTRIANGLE_STRIPS = /^TRIANGLE_STRIPS /; // POINT_DATA number_of_values
 
-				const patPOINT_DATA = /^POINT_DATA[ ]+(\d+)/; // CELL_DATA number_of_polys
+				var patPOINT_DATA = /^POINT_DATA[ ]+(\d+)/; // CELL_DATA number_of_polys
 
-				const patCELL_DATA = /^CELL_DATA[ ]+(\d+)/; // Start of color section
+				var patCELL_DATA = /^CELL_DATA[ ]+(\d+)/; // Start of color section
 
-				const patCOLOR_SCALARS = /^COLOR_SCALARS[ ]+(\w+)[ ]+3/; // NORMALS Normals float
+				var patCOLOR_SCALARS = /^COLOR_SCALARS[ ]+(\w+)[ ]+3/; // NORMALS Normals float
 
-				const patNORMALS = /^NORMALS[ ]+(\w+)[ ]+(\w+)/;
-				let inPointsSection = false;
-				let inPolygonsSection = false;
-				let inTriangleStripSection = false;
-				let inPointDataSection = false;
-				let inCellDataSection = false;
-				let inColorSection = false;
-				let inNormalsSection = false;
-				const lines = data.split( '\n' );
+				var patNORMALS = /^NORMALS[ ]+(\w+)[ ]+(\w+)/;
+				var inPointsSection = false;
+				var inPolygonsSection = false;
+				var inTriangleStripSection = false;
+				var inPointDataSection = false;
+				var inCellDataSection = false;
+				var inColorSection = false;
+				var inNormalsSection = false;
+				var lines = data.split( '\n' );
 
-				for ( const i in lines ) {
+				for ( var i in lines ) {
 
-					const line = lines[ i ].trim();
+					var line = lines[ i ].trim();
 
 					if ( line.indexOf( 'DATASET' ) === 0 ) {
 
-						const dataset = line.split( ' ' )[ 1 ];
+						var dataset = line.split( ' ' )[ 1 ];
 						if ( dataset !== 'POLYDATA' ) throw new Error( 'Unsupported DATASET type: ' + dataset );
 
 					} else if ( inPointsSection ) {
@@ -100,9 +100,9 @@
 						while ( ( result = pat3Floats.exec( line ) ) !== null ) {
 
 							if ( patWord.exec( line ) !== null ) break;
-							const x = parseFloat( result[ 1 ] );
-							const y = parseFloat( result[ 2 ] );
-							const z = parseFloat( result[ 3 ] );
+							var x = parseFloat( result[ 1 ] );
+							var y = parseFloat( result[ 2 ] );
+							var z = parseFloat( result[ 3 ] );
 							positions.push( x, y, z );
 
 						}
@@ -112,18 +112,19 @@
 						if ( ( result = patConnectivity.exec( line ) ) !== null ) {
 
 							// numVertices i0 i1 i2 ...
-							const numVertices = parseInt( result[ 1 ] );
-							const inds = result[ 2 ].split( /\s+/ );
+							var numVertices = parseInt( result[ 1 ] );
+							var inds = result[ 2 ].split( /\s+/ );
 
 							if ( numVertices >= 3 ) {
 
-								const i0 = parseInt( inds[ 0 ] );
-								let k = 1; // split the polygon in numVertices - 2 triangles
+								var i0 = parseInt( inds[ 0 ] );
+								var i1, i2;
+								var k = 1; // split the polygon in numVertices - 2 triangles
 
-								for ( let j = 0; j < numVertices - 2; ++ j ) {
+								for ( var j = 0; j < numVertices - 2; ++ j ) {
 
-									const i1 = parseInt( inds[ k ] );
-									const i2 = parseInt( inds[ k + 1 ] );
+									i1 = parseInt( inds[ k ] );
+									i2 = parseInt( inds[ k + 1 ] );
 									indices.push( i0, i1, i2 );
 									k ++;
 
@@ -138,26 +139,27 @@
 						if ( ( result = patConnectivity.exec( line ) ) !== null ) {
 
 							// numVertices i0 i1 i2 ...
-							const numVertices = parseInt( result[ 1 ] );
-							const inds = result[ 2 ].split( /\s+/ );
+							var numVertices = parseInt( result[ 1 ] );
+							var inds = result[ 2 ].split( /\s+/ );
 
 							if ( numVertices >= 3 ) {
 
-								// split the polygon in numVertices - 2 triangles
-								for ( let j = 0; j < numVertices - 2; j ++ ) {
+								var i0, i1, i2; // split the polygon in numVertices - 2 triangles
+
+								for ( var j = 0; j < numVertices - 2; j ++ ) {
 
 									if ( j % 2 === 1 ) {
 
-										const i0 = parseInt( inds[ j ] );
-										const i1 = parseInt( inds[ j + 2 ] );
-										const i2 = parseInt( inds[ j + 1 ] );
+										i0 = parseInt( inds[ j ] );
+										i1 = parseInt( inds[ j + 2 ] );
+										i2 = parseInt( inds[ j + 1 ] );
 										indices.push( i0, i1, i2 );
 
 									} else {
 
-										const i0 = parseInt( inds[ j ] );
-										const i1 = parseInt( inds[ j + 1 ] );
-										const i2 = parseInt( inds[ j + 2 ] );
+										i0 = parseInt( inds[ j ] );
+										i1 = parseInt( inds[ j + 1 ] );
+										i2 = parseInt( inds[ j + 2 ] );
 										indices.push( i0, i1, i2 );
 
 									}
@@ -176,9 +178,9 @@
 							while ( ( result = pat3Floats.exec( line ) ) !== null ) {
 
 								if ( patWord.exec( line ) !== null ) break;
-								const r = parseFloat( result[ 1 ] );
-								const g = parseFloat( result[ 2 ] );
-								const b = parseFloat( result[ 3 ] );
+								var r = parseFloat( result[ 1 ] );
+								var g = parseFloat( result[ 2 ] );
+								var b = parseFloat( result[ 3 ] );
 								colors.push( r, g, b );
 
 							}
@@ -189,9 +191,9 @@
 							while ( ( result = pat3Floats.exec( line ) ) !== null ) {
 
 								if ( patWord.exec( line ) !== null ) break;
-								const nx = parseFloat( result[ 1 ] );
-								const ny = parseFloat( result[ 2 ] );
-								const nz = parseFloat( result[ 3 ] );
+								var nx = parseFloat( result[ 1 ] );
+								var ny = parseFloat( result[ 2 ] );
+								var nz = parseFloat( result[ 3 ] );
 								normals.push( nx, ny, nz );
 
 							}
@@ -252,7 +254,7 @@
 
 				}
 
-				let geometry = new THREE.BufferGeometry();
+				var geometry = new THREE.BufferGeometry();
 				geometry.setIndex( indices );
 				geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
 
@@ -275,17 +277,17 @@
 
 					// cell
 					geometry = geometry.toNonIndexed();
-					const numTriangles = geometry.attributes.position.count / 3;
+					var numTriangles = geometry.attributes.position.count / 3;
 
 					if ( colors.length === numTriangles * 3 ) {
 
-						const newColors = [];
+						var newColors = [];
 
-						for ( let i = 0; i < numTriangles; i ++ ) {
+						for ( var i = 0; i < numTriangles; i ++ ) {
 
-							const r = colors[ 3 * i + 0 ];
-							const g = colors[ 3 * i + 1 ];
-							const b = colors[ 3 * i + 2 ];
+							var r = colors[ 3 * i + 0 ];
+							var g = colors[ 3 * i + 1 ];
+							var b = colors[ 3 * i + 2 ];
 							newColors.push( r, g, b );
 							newColors.push( r, g, b );
 							newColors.push( r, g, b );
@@ -304,19 +306,22 @@
 
 			function parseBinary( data ) {
 
-				const buffer = new Uint8Array( data );
-				const dataView = new DataView( data ); // Points and normals, by default, are empty
+				var count, pointIndex, i, numberOfPoints, s;
+				var buffer = new Uint8Array( data );
+				var dataView = new DataView( data ); // Points and normals, by default, are empty
 
-				let points = [];
-				let normals = [];
-				let indices = [];
-				let index = 0;
+				var points = [];
+				var normals = [];
+				var indices = []; // Going to make a big array of strings
+
+				var vtk = [];
+				var index = 0;
 
 				function findString( buffer, start ) {
 
-					let index = start;
-					let c = buffer[ index ];
-					const s = [];
+					var index = start;
+					var c = buffer[ index ];
+					var s = [];
 
 					while ( c !== 10 ) {
 
@@ -335,7 +340,7 @@
 
 				}
 
-				let state, line;
+				var state, line;
 
 				while ( true ) {
 
@@ -345,19 +350,20 @@
 
 					if ( line.indexOf( 'DATASET' ) === 0 ) {
 
-						const dataset = line.split( ' ' )[ 1 ];
+						var dataset = line.split( ' ' )[ 1 ];
 						if ( dataset !== 'POLYDATA' ) throw new Error( 'Unsupported DATASET type: ' + dataset );
 
 					} else if ( line.indexOf( 'POINTS' ) === 0 ) {
 
-						// Add the points
-						const numberOfPoints = parseInt( line.split( ' ' )[ 1 ], 10 ); // Each point is 3 4-byte floats
+						vtk.push( line ); // Add the points
 
-						const count = numberOfPoints * 4 * 3;
+						numberOfPoints = parseInt( line.split( ' ' )[ 1 ], 10 ); // Each point is 3 4-byte floats
+
+						count = numberOfPoints * 4 * 3;
 						points = new Float32Array( numberOfPoints * 3 );
-						let pointIndex = state.next;
+						pointIndex = state.next;
 
-						for ( let i = 0; i < numberOfPoints; i ++ ) {
+						for ( i = 0; i < numberOfPoints; i ++ ) {
 
 							points[ 3 * i ] = dataView.getFloat32( pointIndex, false );
 							points[ 3 * i + 1 ] = dataView.getFloat32( pointIndex + 4, false );
@@ -371,22 +377,22 @@
 
 					} else if ( line.indexOf( 'TRIANGLE_STRIPS' ) === 0 ) {
 
-						const numberOfStrips = parseInt( line.split( ' ' )[ 1 ], 10 );
-						const size = parseInt( line.split( ' ' )[ 2 ], 10 ); // 4 byte integers
+						var numberOfStrips = parseInt( line.split( ' ' )[ 1 ], 10 );
+						var size = parseInt( line.split( ' ' )[ 2 ], 10 ); // 4 byte integers
 
-						const count = size * 4;
+						count = size * 4;
 						indices = new Uint32Array( 3 * size - 9 * numberOfStrips );
-						let indicesIndex = 0;
-						let pointIndex = state.next;
+						var indicesIndex = 0;
+						pointIndex = state.next;
 
-						for ( let i = 0; i < numberOfStrips; i ++ ) {
+						for ( i = 0; i < numberOfStrips; i ++ ) {
 
 							// For each strip, read the first value, then record that many more points
-							const indexCount = dataView.getInt32( pointIndex, false );
-							const strip = [];
+							var indexCount = dataView.getInt32( pointIndex, false );
+							var strip = [];
 							pointIndex += 4;
 
-							for ( let s = 0; s < indexCount; s ++ ) {
+							for ( s = 0; s < indexCount; s ++ ) {
 
 								strip.push( dataView.getInt32( pointIndex, false ) );
 								pointIndex += 4;
@@ -394,7 +400,7 @@
 							} // retrieves the n-2 triangles from the triangle strip
 
 
-							for ( let j = 0; j < indexCount - 2; j ++ ) {
+							for ( var j = 0; j < indexCount - 2; j ++ ) {
 
 								if ( j % 2 ) {
 
@@ -419,22 +425,22 @@
 
 					} else if ( line.indexOf( 'POLYGONS' ) === 0 ) {
 
-						const numberOfStrips = parseInt( line.split( ' ' )[ 1 ], 10 );
-						const size = parseInt( line.split( ' ' )[ 2 ], 10 ); // 4 byte integers
+						var numberOfStrips = parseInt( line.split( ' ' )[ 1 ], 10 );
+						var size = parseInt( line.split( ' ' )[ 2 ], 10 ); // 4 byte integers
 
-						const count = size * 4;
+						count = size * 4;
 						indices = new Uint32Array( 3 * size - 9 * numberOfStrips );
-						let indicesIndex = 0;
-						let pointIndex = state.next;
+						var indicesIndex = 0;
+						pointIndex = state.next;
 
-						for ( let i = 0; i < numberOfStrips; i ++ ) {
+						for ( i = 0; i < numberOfStrips; i ++ ) {
 
 							// For each strip, read the first value, then record that many more points
-							const indexCount = dataView.getInt32( pointIndex, false );
-							const strip = [];
+							var indexCount = dataView.getInt32( pointIndex, false );
+							var strip = [];
 							pointIndex += 4;
 
-							for ( let s = 0; s < indexCount; s ++ ) {
+							for ( s = 0; s < indexCount; s ++ ) {
 
 								strip.push( dataView.getInt32( pointIndex, false ) );
 								pointIndex += 4;
@@ -442,7 +448,7 @@
 							} // divide the polygon in n-2 triangle
 
 
-							for ( let j = 1; j < indexCount - 1; j ++ ) {
+							for ( var j = 1; j < indexCount - 1; j ++ ) {
 
 								indices[ indicesIndex ++ ] = strip[ 0 ];
 								indices[ indicesIndex ++ ] = strip[ j ];
@@ -457,15 +463,15 @@
 
 					} else if ( line.indexOf( 'POINT_DATA' ) === 0 ) {
 
-						const numberOfPoints = parseInt( line.split( ' ' )[ 1 ], 10 ); // Grab the next line
+						numberOfPoints = parseInt( line.split( ' ' )[ 1 ], 10 ); // Grab the next line
 
 						state = findString( buffer, state.next ); // Now grab the binary data
 
-						const count = numberOfPoints * 4 * 3;
+						count = numberOfPoints * 4 * 3;
 						normals = new Float32Array( numberOfPoints * 3 );
-						let pointIndex = state.next;
+						pointIndex = state.next;
 
-						for ( let i = 0; i < numberOfPoints; i ++ ) {
+						for ( i = 0; i < numberOfPoints; i ++ ) {
 
 							normals[ 3 * i ] = dataView.getFloat32( pointIndex, false );
 							normals[ 3 * i + 1 ] = dataView.getFloat32( pointIndex + 4, false );
@@ -490,7 +496,7 @@
 
 				}
 
-				const geometry = new THREE.BufferGeometry();
+				var geometry = new THREE.BufferGeometry();
 				geometry.setIndex( new THREE.BufferAttribute( indices, 1 ) );
 				geometry.setAttribute( 'position', new THREE.BufferAttribute( points, 3 ) );
 
@@ -516,7 +522,7 @@
 
 			function Int32Concat( first, second ) {
 
-				const firstLength = first.length,
+				var firstLength = first.length,
 					result = new Int32Array( firstLength + second.length );
 				result.set( first );
 				result.set( second, firstLength );
@@ -530,7 +536,7 @@
 				function xmlToJson( xml ) {
 
 					// Create the return object
-					let obj = {};
+					var obj = {};
 
 					if ( xml.nodeType === 1 ) {
 
@@ -542,9 +548,9 @@
 
 								obj[ 'attributes' ] = {};
 
-								for ( let j = 0; j < xml.attributes.length; j ++ ) {
+								for ( var j = 0; j < xml.attributes.length; j ++ ) {
 
-									const attribute = xml.attributes.item( j );
+									var attribute = xml.attributes.item( j );
 									obj[ 'attributes' ][ attribute.nodeName ] = attribute.nodeValue.trim();
 
 								}
@@ -563,26 +569,26 @@
 
 					if ( xml.hasChildNodes() ) {
 
-						for ( let i = 0; i < xml.childNodes.length; i ++ ) {
+						for ( var i = 0; i < xml.childNodes.length; i ++ ) {
 
-							const item = xml.childNodes.item( i );
-							const nodeName = item.nodeName;
+							var item = xml.childNodes.item( i );
+							var nodeName = item.nodeName;
 
 							if ( typeof obj[ nodeName ] === 'undefined' ) {
 
-								const tmp = xmlToJson( item );
+								var tmp = xmlToJson( item );
 								if ( tmp !== '' ) obj[ nodeName ] = tmp;
 
 							} else {
 
 								if ( typeof obj[ nodeName ].push === 'undefined' ) {
 
-									const old = obj[ nodeName ];
+									var old = obj[ nodeName ];
 									obj[ nodeName ] = [ old ];
 
 								}
 
-								const tmp = xmlToJson( item );
+								var tmp = xmlToJson( item );
 								if ( tmp !== '' ) obj[ nodeName ].push( tmp );
 
 							}
@@ -598,11 +604,20 @@
 
 				function Base64toByteArray( b64 ) {
 
-					const Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array;
-					const revLookup = [];
-					const code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+					var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array;
+					var i;
+					var lookup = [];
+					var revLookup = [];
+					var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+					var len = code.length;
 
-					for ( let i = 0, l = code.length; i < l; ++ i ) {
+					for ( i = 0; i < len; i ++ ) {
+
+						lookup[ i ] = code[ i ];
+
+					}
+
+					for ( i = 0; i < len; ++ i ) {
 
 						revLookup[ code.charCodeAt( i ) ] = i;
 
@@ -610,7 +625,8 @@
 
 					revLookup[ '-'.charCodeAt( 0 ) ] = 62;
 					revLookup[ '_'.charCodeAt( 0 ) ] = 63;
-					const len = b64.length;
+					var j, l, tmp, placeHolders, arr;
+					var len = b64.length;
 
 					if ( len % 4 > 0 ) {
 
@@ -618,15 +634,14 @@
 
 					}
 
-					const placeHolders = b64[ len - 2 ] === '=' ? 2 : b64[ len - 1 ] === '=' ? 1 : 0;
-					const arr = new Arr( len * 3 / 4 - placeHolders );
-					const l = placeHolders > 0 ? len - 4 : len;
-					let L = 0;
-					let i, j;
+					placeHolders = b64[ len - 2 ] === '=' ? 2 : b64[ len - 1 ] === '=' ? 1 : 0;
+					arr = new Arr( len * 3 / 4 - placeHolders );
+					l = placeHolders > 0 ? len - 4 : len;
+					var L = 0;
 
 					for ( i = 0, j = 0; i < l; i += 4, j += 3 ) {
 
-						const tmp = revLookup[ b64.charCodeAt( i ) ] << 18 | revLookup[ b64.charCodeAt( i + 1 ) ] << 12 | revLookup[ b64.charCodeAt( i + 2 ) ] << 6 | revLookup[ b64.charCodeAt( i + 3 ) ];
+						tmp = revLookup[ b64.charCodeAt( i ) ] << 18 | revLookup[ b64.charCodeAt( i + 1 ) ] << 12 | revLookup[ b64.charCodeAt( i + 2 ) ] << 6 | revLookup[ b64.charCodeAt( i + 3 ) ];
 						arr[ L ++ ] = ( tmp & 0xFF0000 ) >> 16;
 						arr[ L ++ ] = ( tmp & 0xFF00 ) >> 8;
 						arr[ L ++ ] = tmp & 0xFF;
@@ -635,12 +650,12 @@
 
 					if ( placeHolders === 2 ) {
 
-						const tmp = revLookup[ b64.charCodeAt( i ) ] << 2 | revLookup[ b64.charCodeAt( i + 1 ) ] >> 4;
+						tmp = revLookup[ b64.charCodeAt( i ) ] << 2 | revLookup[ b64.charCodeAt( i + 1 ) ] >> 4;
 						arr[ L ++ ] = tmp & 0xFF;
 
 					} else if ( placeHolders === 1 ) {
 
-						const tmp = revLookup[ b64.charCodeAt( i ) ] << 10 | revLookup[ b64.charCodeAt( i + 1 ) ] << 4 | revLookup[ b64.charCodeAt( i + 2 ) ] >> 2;
+						tmp = revLookup[ b64.charCodeAt( i ) ] << 10 | revLookup[ b64.charCodeAt( i + 1 ) ] << 4 | revLookup[ b64.charCodeAt( i + 2 ) ] >> 2;
 						arr[ L ++ ] = tmp >> 8 & 0xFF;
 						arr[ L ++ ] = tmp & 0xFF;
 
@@ -652,7 +667,7 @@
 
 				function parseDataArray( ele, compressed ) {
 
-					let numBytes = 0;
+					var numBytes = 0;
 
 					if ( json.attributes.header_type === 'UInt64' ) {
 
@@ -662,19 +677,20 @@
 
 						numBytes = 4;
 
-					}
+					} // Check the format
 
-					let txt, content; // Check the format
 
 					if ( ele.attributes.format === 'binary' && compressed ) {
 
+						var rawData, content, byteData, blocks, cSizeStart, headerSize, padding, dataOffsets, currentOffset;
+
 						if ( ele.attributes.type === 'Float32' ) {
 
-							txt = new Float32Array();
+							var txt = new Float32Array();
 
-						} else if ( ele.attributes.type === 'Int32' || ele.attributes.type === 'Int64' ) {
+						} else if ( ele.attributes.type === 'Int64' ) {
 
-							txt = new Int32Array();
+							var txt = new Int32Array();
 
 						} // VTP data with the header has the following structure:
 						// [#blocks][#u-size][#p-size][#c-size-1][#c-size-2]...[#c-size-#blocks][DATA]
@@ -689,36 +705,34 @@
 						// computed by summing the compressed block sizes from preceding blocks according to the header.
 
 
-						const textNode = ele[ '#text' ];
-						const rawData = Array.isArray( textNode ) ? textNode[ 0 ] : textNode;
-						const byteData = Base64toByteArray( rawData ); // Each data point consists of 8 bits regardless of the header type
+						rawData = ele[ '#text' ];
+						byteData = Base64toByteArray( rawData );
+						blocks = byteData[ 0 ];
 
-						const dataPointSize = 8;
-						let blocks = byteData[ 0 ];
+						for ( var i = 1; i < numBytes - 1; i ++ ) {
 
-						for ( let i = 1; i < numBytes - 1; i ++ ) {
-
-							blocks = blocks | byteData[ i ] << i * dataPointSize;
+							blocks = blocks | byteData[ i ] << i * numBytes;
 
 						}
 
-						let headerSize = ( blocks + 3 ) * numBytes;
-						const padding = headerSize % 3 > 0 ? 3 - headerSize % 3 : 0;
+						headerSize = ( blocks + 3 ) * numBytes;
+						padding = headerSize % 3 > 0 ? 3 - headerSize % 3 : 0;
 						headerSize = headerSize + padding;
-						const dataOffsets = [];
-						let currentOffset = headerSize;
+						dataOffsets = [];
+						currentOffset = headerSize;
 						dataOffsets.push( currentOffset ); // Get the blocks sizes after the compression.
 						// There are three blocks before c-size-i, so we skip 3*numBytes
 
-						const cSizeStart = 3 * numBytes;
+						cSizeStart = 3 * numBytes;
 
-						for ( let i = 0; i < blocks; i ++ ) {
+						for ( var i = 0; i < blocks; i ++ ) {
 
-							let currentBlockSize = byteData[ i * numBytes + cSizeStart ];
+							var currentBlockSize = byteData[ i * numBytes + cSizeStart ];
 
-							for ( let j = 1; j < numBytes - 1; j ++ ) {
+							for ( var j = 1; j < numBytes - 1; j ++ ) {
 
-								currentBlockSize = currentBlockSize | byteData[ i * numBytes + cSizeStart + j ] << j * dataPointSize;
+								// Each data point consists of 8 bytes regardless of the header type
+								currentBlockSize = currentBlockSize | byteData[ i * numBytes + cSizeStart + j ] << j * 8;
 
 							}
 
@@ -727,9 +741,9 @@
 
 						}
 
-						for ( let i = 0; i < dataOffsets.length - 1; i ++ ) {
+						for ( var i = 0; i < dataOffsets.length - 1; i ++ ) {
 
-							const data = fflate.unzlibSync( byteData.slice( dataOffsets[ i ], dataOffsets[ i + 1 ] ) ); // eslint-disable-line no-undef
+							var data = fflate.unzlibSync( byteData.slice( dataOffsets[ i ], dataOffsets[ i + 1 ] ) ); // eslint-disable-line no-undef
 
 							content = data.buffer;
 
@@ -738,7 +752,7 @@
 								content = new Float32Array( content );
 								txt = Float32Concat( txt, content );
 
-							} else if ( ele.attributes.type === 'Int32' || ele.attributes.type === 'Int64' ) {
+							} else if ( ele.attributes.type === 'Int64' ) {
 
 								content = new Int32Array( content );
 								txt = Int32Concat( txt, content );
@@ -767,7 +781,7 @@
 
 						if ( ele.attributes.format === 'binary' && ! compressed ) {
 
-							content = Base64toByteArray( ele[ '#text' ] ); //  VTP data for the uncompressed case has the following structure:
+							var content = Base64toByteArray( ele[ '#text' ] ); //  VTP data for the uncompressed case has the following structure:
 							// [#bytes][DATA]
 							// where "[#bytes]" is an integer value specifying the number of bytes in the block of data following it.
 
@@ -777,7 +791,7 @@
 
 							if ( ele[ '#text' ] ) {
 
-								content = ele[ '#text' ].split( /\s+/ ).filter( function ( el ) {
+								var content = ele[ '#text' ].split( /\s+/ ).filter( function ( el ) {
 
 									if ( el !== '' ) return el;
 
@@ -785,7 +799,7 @@
 
 							} else {
 
-								content = new Int32Array( 0 ).buffer;
+								var content = new Int32Array( 0 ).buffer;
 
 							}
 
@@ -795,15 +809,15 @@
 
 						if ( ele.attributes.type === 'Float32' ) {
 
-							txt = new Float32Array( content );
+							var txt = new Float32Array( content );
 
 						} else if ( ele.attributes.type === 'Int32' ) {
 
-							txt = new Int32Array( content );
+							var txt = new Int32Array( content );
 
 						} else if ( ele.attributes.type === 'Int64' ) {
 
-							txt = new Int32Array( content );
+							var txt = new Int32Array( content );
 
 							if ( ele.attributes.format === 'binary' ) {
 
@@ -826,47 +840,84 @@
 				// Get Dom
 
 
-				const dom = new DOMParser().parseFromString( stringFile, 'application/xml' ); // Get the doc
+				var dom = null;
 
-				const doc = dom.documentElement; // Convert to json
+				if ( window.DOMParser ) {
 
-				const json = xmlToJson( doc );
-				let points = [];
-				let normals = [];
-				let indices = [];
+					try {
+
+						dom = new DOMParser().parseFromString( stringFile, 'text/xml' );
+
+					} catch ( e ) {
+
+						dom = null;
+
+					}
+
+				} else if ( window.ActiveXObject ) {
+
+					try {
+
+						dom = new ActiveXObject( 'Microsoft.XMLDOM' ); // eslint-disable-line no-undef
+
+						dom.async = false;
+
+						if ( ! dom.loadXML() ) {
+
+							throw new Error( dom.parseError.reason + dom.parseError.srcText );
+
+						}
+
+					} catch ( e ) {
+
+						dom = null;
+
+					}
+
+				} else {
+
+					throw new Error( 'Cannot parse xml string!' );
+
+				} // Get the doc
+
+
+				var doc = dom.documentElement; // Convert to json
+
+				var json = xmlToJson( doc );
+				var points = [];
+				var normals = [];
+				var indices = [];
 
 				if ( json.PolyData ) {
 
-					const piece = json.PolyData.Piece;
-					const compressed = json.attributes.hasOwnProperty( 'compressor' ); // Can be optimized
+					var piece = json.PolyData.Piece;
+					var compressed = json.attributes.hasOwnProperty( 'compressor' ); // Can be optimized
 					// Loop through the sections
 
-					const sections = [ 'PointData', 'Points', 'Strips', 'Polys' ]; // +['CellData', 'Verts', 'Lines'];
+					var sections = [ 'PointData', 'Points', 'Strips', 'Polys' ]; // +['CellData', 'Verts', 'Lines'];
 
-					let sectionIndex = 0;
-					const numberOfSections = sections.length;
+					var sectionIndex = 0,
+						numberOfSections = sections.length;
 
 					while ( sectionIndex < numberOfSections ) {
 
-						const section = piece[ sections[ sectionIndex ] ]; // If it has a DataArray in it
+						var section = piece[ sections[ sectionIndex ] ]; // If it has a DataArray in it
 
 						if ( section && section.DataArray ) {
 
 							// Depending on the number of DataArrays
-							let arr;
+							if ( Object.prototype.toString.call( section.DataArray ) === '[object Array]' ) {
 
-							if ( Array.isArray( section.DataArray ) ) {
-
-								arr = section.DataArray;
+								var arr = section.DataArray;
 
 							} else {
 
-								arr = [ section.DataArray ];
+								var arr = [ section.DataArray ];
 
 							}
 
-							let dataArrayIndex = 0;
-							const numberOfDataArrays = arr.length;
+							var dataArrayIndex = 0,
+								numberOfDataArrays = arr.length;
 
 							while ( dataArrayIndex < numberOfDataArrays ) {
 
@@ -885,22 +936,18 @@
 
 								// if iti is point data
 								case 'PointData':
-									{
+									var numberOfPoints = parseInt( piece.attributes.NumberOfPoints );
+									var normalsName = section.attributes.Normals;
 
-										const numberOfPoints = parseInt( piece.attributes.NumberOfPoints );
-										const normalsName = section.attributes.Normals;
+									if ( numberOfPoints > 0 ) {
 
-										if ( numberOfPoints > 0 ) {
+										for ( var i = 0, len = arr.length; i < len; i ++ ) {
 
-											for ( let i = 0, len = arr.length; i < len; i ++ ) {
+											if ( normalsName === arr[ i ].attributes.Name ) {
 
-												if ( normalsName === arr[ i ].attributes.Name ) {
-
-													const components = arr[ i ].attributes.NumberOfComponents;
-													normals = new Float32Array( numberOfPoints * components );
-													normals.set( arr[ i ].text, 0 );
-
-												}
+												var components = arr[ i ].attributes.NumberOfComponents;
+												normals = new Float32Array( numberOfPoints * components );
+												normals.set( arr[ i ].text, 0 );
 
 											}
 
@@ -912,17 +959,13 @@
 									// if it is points
 
 								case 'Points':
-									{
+									var numberOfPoints = parseInt( piece.attributes.NumberOfPoints );
 
-										const numberOfPoints = parseInt( piece.attributes.NumberOfPoints );
+									if ( numberOfPoints > 0 ) {
 
-										if ( numberOfPoints > 0 ) {
-
-											const components = section.DataArray.attributes.NumberOfComponents;
-											points = new Float32Array( numberOfPoints * components );
-											points.set( section.DataArray.text, 0 );
-
-										}
+										var components = section.DataArray.attributes.NumberOfComponents;
+										points = new Float32Array( numberOfPoints * components );
+										points.set( section.DataArray.text, 0 );
 
 									}
 
@@ -930,50 +973,46 @@
 									// if it is strips
 
 								case 'Strips':
-									{
+									var numberOfStrips = parseInt( piece.attributes.NumberOfStrips );
 
-										const numberOfStrips = parseInt( piece.attributes.NumberOfStrips );
+									if ( numberOfStrips > 0 ) {
 
-										if ( numberOfStrips > 0 ) {
+										var connectivity = new Int32Array( section.DataArray[ 0 ].text.length );
+										var offset = new Int32Array( section.DataArray[ 1 ].text.length );
+										connectivity.set( section.DataArray[ 0 ].text, 0 );
+										offset.set( section.DataArray[ 1 ].text, 0 );
+										var size = numberOfStrips + connectivity.length;
+										indices = new Uint32Array( 3 * size - 9 * numberOfStrips );
+										var indicesIndex = 0;
 
-											const connectivity = new Int32Array( section.DataArray[ 0 ].text.length );
-											const offset = new Int32Array( section.DataArray[ 1 ].text.length );
-											connectivity.set( section.DataArray[ 0 ].text, 0 );
-											offset.set( section.DataArray[ 1 ].text, 0 );
-											const size = numberOfStrips + connectivity.length;
-											indices = new Uint32Array( 3 * size - 9 * numberOfStrips );
-											let indicesIndex = 0;
+										for ( var i = 0, len = numberOfStrips; i < len; i ++ ) {
 
-											for ( let i = 0, len = numberOfStrips; i < len; i ++ ) {
+											var strip = [];
 
-												const strip = [];
+											for ( var s = 0, len1 = offset[ i ], len0 = 0; s < len1 - len0; s ++ ) {
 
-												for ( let s = 0, len1 = offset[ i ], len0 = 0; s < len1 - len0; s ++ ) {
+												strip.push( connectivity[ s ] );
+												if ( i > 0 ) len0 = offset[ i - 1 ];
 
-													strip.push( connectivity[ s ] );
-													if ( i > 0 ) len0 = offset[ i - 1 ];
+											}
 
-												}
+											for ( var j = 0, len1 = offset[ i ], len0 = 0; j < len1 - len0 - 2; j ++ ) {
 
-												for ( let j = 0, len1 = offset[ i ], len0 = 0; j < len1 - len0 - 2; j ++ ) {
+												if ( j % 2 ) {
 
-													if ( j % 2 ) {
+													indices[ indicesIndex ++ ] = strip[ j ];
+													indices[ indicesIndex ++ ] = strip[ j + 2 ];
+													indices[ indicesIndex ++ ] = strip[ j + 1 ];
 
-														indices[ indicesIndex ++ ] = strip[ j ];
-														indices[ indicesIndex ++ ] = strip[ j + 2 ];
-														indices[ indicesIndex ++ ] = strip[ j + 1 ];
+												} else {
 
-													} else {
-
-														indices[ indicesIndex ++ ] = strip[ j ];
-														indices[ indicesIndex ++ ] = strip[ j + 1 ];
-														indices[ indicesIndex ++ ] = strip[ j + 2 ];
-
-													}
-
-													if ( i > 0 ) len0 = offset[ i - 1 ];
+													indices[ indicesIndex ++ ] = strip[ j ];
+													indices[ indicesIndex ++ ] = strip[ j + 1 ];
+													indices[ indicesIndex ++ ] = strip[ j + 2 ];
 
 												}
+
+												if ( i > 0 ) len0 = offset[ i - 1 ];
 
 											}
 
@@ -985,52 +1024,48 @@
 									// if it is polys
 
 								case 'Polys':
-									{
+									var numberOfPolys = parseInt( piece.attributes.NumberOfPolys );
 
-										const numberOfPolys = parseInt( piece.attributes.NumberOfPolys );
+									if ( numberOfPolys > 0 ) {
 
-										if ( numberOfPolys > 0 ) {
+										var connectivity = new Int32Array( section.DataArray[ 0 ].text.length );
+										var offset = new Int32Array( section.DataArray[ 1 ].text.length );
+										connectivity.set( section.DataArray[ 0 ].text, 0 );
+										offset.set( section.DataArray[ 1 ].text, 0 );
+										var size = numberOfPolys + connectivity.length;
+										indices = new Uint32Array( 3 * size - 9 * numberOfPolys );
+										var indicesIndex = 0,
+											connectivityIndex = 0;
+										var i = 0,
+											len = numberOfPolys,
+											len0 = 0;
 
-											const connectivity = new Int32Array( section.DataArray[ 0 ].text.length );
-											const offset = new Int32Array( section.DataArray[ 1 ].text.length );
-											connectivity.set( section.DataArray[ 0 ].text, 0 );
-											offset.set( section.DataArray[ 1 ].text, 0 );
-											const size = numberOfPolys + connectivity.length;
-											indices = new Uint32Array( 3 * size - 9 * numberOfPolys );
-											let indicesIndex = 0,
-												connectivityIndex = 0;
-											let i = 0,
-												len0 = 0;
-											const len = numberOfPolys;
+										while ( i < len ) {
 
-											while ( i < len ) {
+											var poly = [];
+											var s = 0,
+												len1 = offset[ i ];
 
-												const poly = [];
-												let s = 0;
-												const len1 = offset[ i ];
+											while ( s < len1 - len0 ) {
 
-												while ( s < len1 - len0 ) {
-
-													poly.push( connectivity[ connectivityIndex ++ ] );
-													s ++;
-
-												}
-
-												let j = 1;
-
-												while ( j < len1 - len0 - 1 ) {
-
-													indices[ indicesIndex ++ ] = poly[ 0 ];
-													indices[ indicesIndex ++ ] = poly[ j ];
-													indices[ indicesIndex ++ ] = poly[ j + 1 ];
-													j ++;
-
-												}
-
-												i ++;
-												len0 = offset[ i - 1 ];
+												poly.push( connectivity[ connectivityIndex ++ ] );
+												s ++;
 
 											}
+
+											var j = 1;
+
+											while ( j < len1 - len0 - 1 ) {
+
+												indices[ indicesIndex ++ ] = poly[ 0 ];
+												indices[ indicesIndex ++ ] = poly[ j ];
+												indices[ indicesIndex ++ ] = poly[ j + 1 ];
+												j ++;
+
+											}
+
+											i ++;
+											len0 = offset[ i - 1 ];
 
 										}
 
@@ -1049,7 +1084,7 @@
 
 					}
 
-					const geometry = new THREE.BufferGeometry();
+					var geometry = new THREE.BufferGeometry();
 					geometry.setIndex( new THREE.BufferAttribute( indices, 1 ) );
 					geometry.setAttribute( 'position', new THREE.BufferAttribute( points, 3 ) );
 
@@ -1070,7 +1105,7 @@
 			} // get the 5 first lines of the files to check if there is the key word binary
 
 
-			const meta = THREE.LoaderUtils.decodeText( new Uint8Array( data, 0, 250 ) ).split( '\n' );
+			var meta = THREE.LoaderUtils.decodeText( new Uint8Array( data, 0, 250 ) ).split( '\n' );
 
 			if ( meta[ 0 ].indexOf( 'xml' ) !== - 1 ) {
 

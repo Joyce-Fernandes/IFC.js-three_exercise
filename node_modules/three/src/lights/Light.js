@@ -7,8 +7,6 @@ class Light extends Object3D {
 
 		super();
 
-		this.isLight = true;
-
 		this.type = 'Light';
 
 		this.color = new Color( color );
@@ -22,9 +20,9 @@ class Light extends Object3D {
 
 	}
 
-	copy( source, recursive ) {
+	copy( source ) {
 
-		super.copy( source, recursive );
+		super.copy( source );
 
 		this.color.copy( source.color );
 		this.intensity = source.intensity;
@@ -54,5 +52,7 @@ class Light extends Object3D {
 	}
 
 }
+
+Light.prototype.isLight = true;
 
 export { Light };

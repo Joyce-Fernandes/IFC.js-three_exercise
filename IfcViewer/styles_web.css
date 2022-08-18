@@ -1,0 +1,284 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+html,
+body {
+  overflow: hidden;
+}
+
+.hidden {
+  visibility: collapse;
+}
+
+.icon {
+  max-width: 20px;
+  max-height: 20px;
+  margin: auto;
+}
+
+.text {
+  color: rgb(173, 173, 173);
+  border-bottom: 1px solid rgb(104, 104, 104);
+  padding: 0.6em 0.6em 0.6em 1em;
+}
+
+.text:hover {
+  background-color: #3e4147;
+}
+
+.text-title {
+  color: rgb(236, 236, 236);
+}
+
+.basic-button {
+  margin-top: 1em;
+  margin-left: 2em;
+  padding: 0.5rem;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 500;
+  color: #000;
+  background: var(--translucent-white);
+  backdrop-filter: var(--blur-filter);
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+}
+
+.basic-button:hover {
+  background-color: var(--light-blue);
+  box-shadow: 0px 15px 20px rgba(46, 104, 229, 0.4);
+  color: #fff;
+  fill: #fff;
+  transform: translateY(-7px);
+}
+
+.side-menu {
+  z-index: 1;
+  position: fixed;
+  height: 100vh;
+}
+
+.side-sub-menu {
+  width: 100%;
+  height: inherit;
+  margin: 2px;
+}
+
+.ifcjs-dimension-preview {
+  width: 2rem;
+  height: 2rem;
+  background-color: rebeccapurple;
+  border-radius: 1rem;
+  opacity: 0.3;
+}
+
+#viewer-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#side-menu-left {
+  width: 40px;
+}
+
+#side-menu-right {
+  right: 0;
+  width: 300px;
+}
+
+.loading-overlay {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #f1f1f150;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-progress {
+  color: gray;
+}
+
+.hidden {
+  display: none;
+}
+
+.properties-panel {
+  position: absolute;
+  width: 25vw;
+  height: 40vh;
+  top: 7vw;
+  right: 4vh;
+  background: rgb(199, 196, 196);
+  opacity: 0.7;
+  overflow-y: scroll;
+  overflow-x: scroll;
+  padding: 20px;
+}
+
+.properties-table {
+  font-size: 17px;
+}
+
+.button a {
+  margin: .5rem;
+}
+
+.active {
+  display: block;
+  margin-left: 10px;
+}
+
+.toolbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  pointer-events: all;
+}
+
+.toolbar input {
+  border: none;
+  border-radius: var(--border-radius);
+  height: 2rem;
+  padding: 0.3rem;
+  background-color: var(--primary-light-transp1);
+  backdrop-filter: var(--blur);
+  box-shadow: var(--shadow);
+  max-width: 3rem;
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+.toolbar input:hover {
+  background: var(--primary-light);
+  transition: all 0.3s ease 0s;
+  transform: translateY(-4px);
+}
+
+.toolbar input::-webkit-outer-spin-button,
+.toolbar input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.toolbar input:focus {
+  background: var(--primary-light);
+}
+
+.side-sub-menu {
+  width: 100%;
+  height: inherit;
+  margin: 2px;
+}
+
+#side-menu-left {
+  width: 40px;
+}
+
+.side-menu {
+  z-index: 1;
+  position: fixed;
+
+  height: 100vh;
+}
+
+#side-menu-left {
+  width: 40px;
+}
+
+#side-menu-right {
+  right: 0;
+  width: 300px;
+}
+
+.btn-tool {
+  color: #FFFFFF;
+  background-color: #FF6EB7;
+  border-color: #FFFFFF;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 3vh;
+
+}
+
+.btn-tool:hover,
+.open .dropdown-toggle.btn-tool {
+  color: #FFFFFF;
+  background-color: #9C9C9C;
+  border-color: #FFFFFF;
+}
+
+
+.btn-tool.disabled,
+.btn-tool[disabled],
+fieldset[disabled] .btn-tool,
+.btn-tool.disabled:hover,
+.btn-tool[disabled]:hover,
+fieldset[disabled] .btn-tool:hover,
+
+.btn-tool .badge {
+  color: #FF6EB7;
+  background-color: #FFFFFF;
+}
+.btn-toola {
+  color: #FFFFFF;
+  background-color: #FF6EB7;
+  border-color: #FFFFFF;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 3vh;
+
+}
+
+.btn-toola:hover,
+  .btn-toola:active,
+  .btn-toola.active,
+.open .dropdown-toggle.btn-toola {
+  color: #FFFFFF;
+  background-color: #9C9C9C;
+  border-color: #FFFFFF;
+}
+
+
+
+
+#checkboxes {
+    visibility: hidden;
+    z-index: 1;
+    text-transform: uppercase;
+
+    color: #ff8ed7;
+    cursor: default;
+    font-family: "Gill Sans", Impact, sans-serif;
+    font-size: 22px;
+    margin-left: 1.5vw;
+    margin-top: 7vh;
+    position: absolute;
+    text-align: center;
+    width: 100px;
+    }
+    .checkboxes {
+      position: absolute;
+      left: 1rem;
+      top: 1rem;
+  }

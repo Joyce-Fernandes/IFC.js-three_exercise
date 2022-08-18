@@ -6,8 +6,6 @@ class OrthographicCamera extends Camera {
 
 		super();
 
-		this.isOrthographicCamera = true;
-
 		this.type = 'OrthographicCamera';
 
 		this.zoom = 1;
@@ -132,5 +130,7 @@ class OrthographicCamera extends Camera {
 	}
 
 }
+
+OrthographicCamera.prototype.isOrthographicCamera = true;
 
 export { OrthographicCamera };

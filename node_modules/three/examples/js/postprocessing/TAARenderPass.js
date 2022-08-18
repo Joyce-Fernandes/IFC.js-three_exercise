@@ -24,7 +24,7 @@
 
 		render( renderer, writeBuffer, readBuffer, deltaTime ) {
 
-			if ( this.accumulate === false ) {
+			if ( ! this.accumulate ) {
 
 				super.render( renderer, writeBuffer, readBuffer, deltaTime );
 				this.accumulateIndex = - 1;
@@ -34,21 +34,21 @@
 
 			const jitterOffsets = _JitterVectors[ 5 ];
 
-			if ( this.sampleRenderTarget === undefined ) {
+			if ( ! this.sampleRenderTarget ) {
 
 				this.sampleRenderTarget = new THREE.WebGLRenderTarget( readBuffer.width, readBuffer.height, this.params );
 				this.sampleRenderTarget.texture.name = 'TAARenderPass.sample';
 
 			}
 
-			if ( this.holdRenderTarget === undefined ) {
+			if ( ! this.holdRenderTarget ) {
 
 				this.holdRenderTarget = new THREE.WebGLRenderTarget( readBuffer.width, readBuffer.height, this.params );
 				this.holdRenderTarget.texture.name = 'TAARenderPass.hold';
 
 			}
 
-			if ( this.accumulateIndex === - 1 ) {
+			if ( this.accumulate && this.accumulateIndex === - 1 ) {
 
 				super.render( renderer, this.holdRenderTarget, readBuffer, deltaTime );
 				this.accumulateIndex = 0;

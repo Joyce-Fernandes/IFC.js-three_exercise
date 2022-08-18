@@ -6,8 +6,6 @@ class InstancedBufferGeometry extends BufferGeometry {
 
 		super();
 
-		this.isInstancedBufferGeometry = true;
-
 		this.type = 'InstancedBufferGeometry';
 		this.instanceCount = Infinity;
 
@@ -42,5 +40,7 @@ class InstancedBufferGeometry extends BufferGeometry {
 	}
 
 }
+
+InstancedBufferGeometry.prototype.isInstancedBufferGeometry = true;
 
 export { InstancedBufferGeometry };

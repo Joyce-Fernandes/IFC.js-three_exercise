@@ -1,71 +1,68 @@
-import Node from './Node.js';
-import VaryNode from './VaryNode.js';
+import { Node } from './Node.js';
 
 class AttributeNode extends Node {
 
-	constructor( attributeName, nodeType = null ) {
+	constructor( name, type ) {
 
-		super( nodeType );
+		super( type );
 
-		this._attributeName = attributeName;
-
-	}
-
-	getHash( builder ) {
-
-		return this.getAttributeName( builder );
+		this.name = name;
 
 	}
 
-	getNodeType( builder ) {
+	getAttributeType( builder ) {
 
-		let nodeType = super.getNodeType( builder );
-
-		if ( nodeType === null ) {
-
-			const attributeName = this.getAttributeName( builder );
-			const attribute = builder.geometry.getAttribute( attributeName );
-
-			nodeType = builder.getTypeFromLength( attribute.itemSize );
-
-		}
-
-		return nodeType;
+		return typeof this.type === 'number' ? builder.getConstructorFromLength( this.type ) : this.type;
 
 	}
 
-	setAttributeName( attributeName ) {
+	getType( builder ) {
 
-		this._attributeName = attributeName;
+		const type = this.getAttributeType( builder );
+
+		return builder.getTypeByFormat( type );
+
+	}
+
+	generate( builder, output ) {
+
+		const type = this.getAttributeType( builder );
+
+		const attribute = builder.getAttribute( this.name, type ),
+			name = builder.isShader( 'vertex' ) ? this.name : attribute.varying.name;
+
+		return builder.format( name, this.getType( builder ), output );
+
+	}
+
+	copy( source ) {
+
+		super.copy( source );
+
+		this.type = source.type;
 
 		return this;
 
 	}
 
-	getAttributeName( /*builder*/ ) {
+	toJSON( meta ) {
 
-		return this._attributeName;
+		let data = this.getJSONNode( meta );
 
-	}
+		if ( ! data ) {
 
-	generate( builder ) {
+			data = this.createJSONNode( meta );
 
-		const attribute = builder.getAttribute( this.getAttributeName( builder ), this.getNodeType( builder ) );
-
-		if ( builder.isShaderStage( 'vertex' ) ) {
-
-			return attribute.name;
-
-		} else {
-
-			const nodeVary = new VaryNode( this );
-
-			return nodeVary.build( builder, attribute.type );
+			data.type = this.type;
 
 		}
+
+		return data;
 
 	}
 
 }
 
-export default AttributeNode;
+AttributeNode.prototype.nodeType = 'Attribute';
+
+export { AttributeNode };

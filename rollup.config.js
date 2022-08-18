@@ -1,14 +1,12 @@
-import resolve from '@rollup/plugin-node-resolve';
+import resolve from "@rollup/plugin-node-resolve";
 
 export default {
-  input: './index.js',
+  input: "model_viewer.js",
   output: [
     {
-      format: 'esm',
-      file: './bundle.js'
+      format: "esm",
+      file: "bundle.js",
     },
   ],
-  plugins: [
-    resolve(),
-  ]
+  plugins: [resolve()],
 };

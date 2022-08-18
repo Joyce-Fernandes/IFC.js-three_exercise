@@ -145,6 +145,7 @@
 					}
 
 					angle = math.acos( angle ); // skip if changing angle is too small to prevent vibration of bone
+					// Refer to http://www20.atpages.jp/katwat/three.js_r58/examples/mytest37/mmd.three.js
 
 					if ( angle < 1e-5 ) continue;
 
@@ -179,13 +180,13 @@
 
 					if ( rotationMin !== undefined ) {
 
-						link.rotation.setFromVector3( _vector.setFromEuler( link.rotation ).max( rotationMin ) );
+						link.rotation.setFromVector3( link.rotation.toVector3( _vector ).max( rotationMin ) );
 
 					}
 
 					if ( rotationMax !== undefined ) {
 
-						link.rotation.setFromVector3( _vector.setFromEuler( link.rotation ).min( rotationMax ) );
+						link.rotation.setFromVector3( link.rotation.toVector3( _vector ).min( rotationMax ) );
 
 					}
 
@@ -427,7 +428,6 @@
 
 	}
 
-	THREE.CCDIKHelper = CCDIKHelper;
 	THREE.CCDIKSolver = CCDIKSolver;
 
 } )();
