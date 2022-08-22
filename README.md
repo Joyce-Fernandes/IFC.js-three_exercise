@@ -12,8 +12,6 @@
   <a href="https://www.npmjs.com/package/web-ifc-viewer">npm package</a>
 </p>
 
-
-
  <img width="80%" height= "40%"  align="center" src="/webpage/img/web.jpeg" alt="template">
 <br/>
 
