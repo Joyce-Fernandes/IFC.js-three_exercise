@@ -60,6 +60,11 @@ Install:
 
 `npm install web-ifc-viewer` or `yarn add web-ifc-viewer`
 
+
+Running:
+
+`npm start`
+
 #
 
 <pre>
