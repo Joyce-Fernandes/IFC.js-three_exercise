@@ -2,7 +2,7 @@
   
   
   |
-  <a href="https://joyce-ifcjs.com/">demo</a>
+  <a href="https://joyce-ifcjs.com/">Demo</a>
   |
   <a href="https://www.linkedin.com/in/joyce-fernandes-da-silva/">LinkedIn</a>
   |
