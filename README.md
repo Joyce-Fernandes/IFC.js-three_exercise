@@ -1,15 +1,12 @@
 <p align="center">
-  <a href="https://ifcjs.github.io/info/">ifc.js</a>
+  
+  
   |
-  <a href="https://ifcjs.github.io/info/docs/Guide/web-ifc-viewer/Introduction">documentation</a>
+  <a href="https://joyce-ifcjs.com/">demo</a>
   |
-  <a href="https://ifcjs.github.io/web-ifc-viewer/example/index">demo</a>
+  <a href="https://www.linkedin.com/in/joyce-fernandes-da-silva/">LinkedIn</a>
   |
-  <a href="https://discord.gg/FXfyR4XrKT">discord</a>
-  |
-  <a href="https://github.com/IFCjs/web-ifc-viewer/tree/master/example">usage example</a>
-  |
-  <a href="https://www.npmjs.com/package/web-ifc-viewer">npm package</a>
+
 </p>
 
  <img width="80%" height= "40%"  align="center" src="/webpage/img/web.jpeg" alt="template">
